@@ -1,3 +1,5 @@
+import math
+
 import pygame
 from static.constants import *
 
@@ -40,5 +42,11 @@ class Cat:
             self.jump_velocity = JUMP_VELOCITY
 
     def draw(self):
-
         self.screen.blit(self.image, (self.rect.x, self.rect.y))
+
+    def calc_distance(self, enemy):
+        cat_pos = (self.rect.x, self.rect.y)
+        enemy_pos = enemy.rect.midtop
+        dx = cat_pos[0] - enemy_pos[0]
+        dy = cat_pos[1] - enemy_pos[1]
+        return math.sqrt(dx**2+dy**2)

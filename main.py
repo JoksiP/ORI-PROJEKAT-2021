@@ -5,6 +5,8 @@ import sys
 from models.cat import *
 from models.scoreboard import *
 from models.enemy import *
+import config.neat_config
+import neat
 
 pygame.init()
 
@@ -36,12 +38,13 @@ def init_screen(scoreboard, x, y):
     return x, y
 
 
-def remove_cat(idx, cats):
+def remove_cat(idx, cats, cat_genomes, cat_nns):
     cats.pop(idx)
-    return cats
+    cat_genomes.pop(idx)
+    cat_nns.pop(idx)
 
 
-def main():
+def evaluate(genomes, config_file):
     pygame.display.set_caption("Cat-jump master")
     pygame.display.set_icon(ICON)
 
@@ -49,8 +52,18 @@ def main():
 
     scoreboard = Scoreboard(SCREEN, FONT, 100)  # 100 = value at which the game speed increments
     x_earth, y_earth = init_screen(scoreboard, 0, 420)
-    cats = [Cat(SCREEN, CAT_WALKING)]
+
+    cats = []
     enemies = []
+    cat_genomes = []
+    cat_nns = []
+
+    for genome_id, genome in genomes:
+        cats.append(Cat(SCREEN, CAT_WALKING))
+        cat_genomes.append(genome)
+        cat_nn = neat.nn.FeedForwardNetwork.create(genome, config_file)
+        cat_nns.append(cat_nn)
+        genome.fitness = 0
 
     while True:
         input_key = pygame.key.get_pressed()
@@ -66,25 +79,34 @@ def main():
             break
         if len(enemies) == 0:
             idx = random.randint(0, 5)
-            enemies.append(Enemy(SCREEN, ENEMIES, idx, scoreboard.speed, False))
-            idx = random.choice([i for i in range(0, 5) if i not in [idx]])
-            enemies.append(Enemy(SCREEN, ENEMIES, idx, scoreboard.speed, True))
+            enemies.append(Enemy(SCREEN, ENEMIES, idx, scoreboard.speed))
 
         for enemy in enemies:
             enemy.draw()
             enemy.update(enemies)
             for i, cat in enumerate(cats):
                 if cat.rect.colliderect(enemy.rect):
-                    cats = remove_cat(i, cats)
+                    cat_genomes[i].fitness -= 1
+                    remove_cat(i, cats, cat_genomes, cat_nns)
 
         for cat in cats:
             cat.update()
             cat.draw()
 
-        for i, cat in enumerate(cats):
-            if input_key[pygame.K_SPACE]:
-                cat.is_jumping = True
-                cat.is_running = False
+        text = FONT.render(f'Population:  {str(len(cats))}', True, (0, 0, 0))
+        SCREEN.blit(text, (300, 650))
+
+        if len(enemies) != 0:
+            for i, cat in enumerate(cats):
+                output = cat_nns[i].activate((cat.rect.y, cat.calc_distance(enemies[0]), enemies[0].flying * 500000))
+                if output[0] > 0.5 and cat.rect.y == CAT_Y:
+                    cat.is_jumping = True
+                    cat.is_running = False
+                """ [ MANUAL CONTROL ]
+                if input_key[pygame.K_SPACE]:
+                    cat.is_jumping = True
+                    cat.is_running = False
+                """
 
         scoreboard.increment_score()
         scoreboard.display_score()
@@ -93,4 +115,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    config.neat_config.run().run(evaluate, 1000)
