@@ -1,3 +1,6 @@
+from utils.util import display_score
+
+
 class Scoreboard:
     def __init__(self, screen, font, speed_increment):
         self.screen = screen
@@ -12,5 +15,4 @@ class Scoreboard:
             self.speed += 1
 
     def display_score(self):
-        text = self.font.render(f'Score:  {str(self.score)}', True, (0, 0, 0))
-        self.screen.blit(text, (85, 650))
+        display_score(self.screen, self.font, str(self.score))

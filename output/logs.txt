@@ -1,0 +1,12 @@
+Generation:  1
+	Best score:  390
+
+Generation:  2
+	Best score:  313
+
+Generation:  3
+	Best score:  459
+
+Generation:  4
+	Best score:  316
+
