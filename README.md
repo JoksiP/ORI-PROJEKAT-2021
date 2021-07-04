@@ -1,4 +1,4 @@
-# ORI-PROJEKAT-2021
+# Predmetni projekat Osnova Računarske Inteligencije
 
 Članovi tima:
 * Petljanski Jovan SW-31/2018, grupa 2
