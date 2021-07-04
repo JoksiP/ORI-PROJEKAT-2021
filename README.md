@@ -39,4 +39,6 @@ U donjem delu prozora nalaze se totalni rezultat (Score), generacija (Generation
 Takođe simulaciju je moguće privremeno zaustaviti pritiskom tastera *Esc* i istim je nastaviti.<br/>
 <br/>
 Nakon izvršavanja simulacija ili zatvaranjem prozora na dugme *X* rezultate simulacija možete videti na putanji **output->logs.txt**, gde je za svaku pojedinacnu<br/>
-generaciju naveden rezultat (Score) najboljeg gena.
+generaciju naveden rezultat (Score) najboljeg gena.<br/>
+<br/>
+Konfiguraciju NEAT algoritma je moguće izmeniti na putanji **config->config.txt**
