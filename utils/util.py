@@ -1,5 +1,5 @@
 import os
-
+import time
 
 def display_score(screen, font, score):
     text = font.render(f'Score:  {score}', True, (0, 0, 0))
@@ -19,6 +19,11 @@ def display_population(screen, font, population):
 def display_pause(screen, font):
     text = font.render(f'"Esc" - {"Pause/Resume"}', True, (0, 0, 0))
     screen.blit(text, (900, 650))
+
+
+def display_clock(screen, font, seconds):
+    text = font.render(f'Elapsed:  {time.strftime("%H:%M:%S", time.gmtime(seconds))}', True, (0, 0, 0))
+    screen.blit(text, (900, 590))
 
 
 def empty_logs():

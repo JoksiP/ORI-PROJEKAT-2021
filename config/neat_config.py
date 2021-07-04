@@ -10,6 +10,5 @@ def run():
         neat.DefaultStagnation,
         os.path.join("config", "config.txt")
     )
-
     population = neat.Population(config_neat)
     return population

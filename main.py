@@ -22,7 +22,6 @@ CAT_WALKING = [pygame.image.load(os.path.join("images", "cat_walk1.png")),
                pygame.image.load(os.path.join("images", "cat_walk3.png"))]
 ENEMIES = [pygame.image.load(os.path.join("images", "enemy_0_0.png")),
            pygame.image.load(os.path.join("images", "enemy_0_1.png")),
-           pygame.image.load(os.path.join("images", "enemy_0_2.png")),
            pygame.image.load(os.path.join("images", "enemy_1_0.png")),
            pygame.image.load(os.path.join("images", "enemy_1_1.png")),
            pygame.image.load(os.path.join("images", "enemy_1_2.png"))]
@@ -78,6 +77,7 @@ def evaluate(genomes, config_file):
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                write_logs(population.generation, scoreboard.score)
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
@@ -89,7 +89,7 @@ def evaluate(genomes, config_file):
             if not cats:
                 break
             if len(enemies) == 0:
-                idx = random.randint(0, 5)
+                idx = random.randint(0, 4)
                 enemies.append(Enemy(SCREEN, ENEMIES, idx, scoreboard.speed))
 
             for enemy in enemies:
@@ -110,7 +110,7 @@ def evaluate(genomes, config_file):
 
             if len(enemies) != 0:
                 for i, cat in enumerate(cats):
-                    output = cat_nns[i].activate((cat.rect.y, cat.calc_distance(enemies[0]), enemies[0].flying * 500000))
+                    output = cat_nns[i].activate((cat.rect.y, cat.calc_distance(enemies[0]), enemies[0].flying * 500000, enemies[0].rect.width, scoreboard.speed))
                     if output[0] > 0.5 and cat.rect.y == CAT_Y:
                         cat.is_jumping = True
                         cat.is_running = False
@@ -122,6 +122,9 @@ def evaluate(genomes, config_file):
 
             scoreboard.increment_score()
             scoreboard.display_score()
+            seconds = (pygame.time.get_ticks()-start_ticks) / 1000
+            display_clock(SCREEN, FONT, seconds)
+
         display_pause(SCREEN, FONT)
         yep_clock.tick(30)
         pygame.display.update()
@@ -129,7 +132,8 @@ def evaluate(genomes, config_file):
 
 
 if __name__ == '__main__':
-    global population
+    global population, start_ticks
     empty_logs()
+    start_ticks = pygame.time.get_ticks()
     population = config.neat_config.run()
     population.run(evaluate, 1000)

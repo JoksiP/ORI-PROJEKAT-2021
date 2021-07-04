@@ -1,12 +1,18 @@
 Generation:  1
-	Best score:  390
+	Best score:  247
 
 Generation:  2
-	Best score:  313
+	Best score:  1931
 
 Generation:  3
-	Best score:  459
+	Best score:  2016
 
 Generation:  4
-	Best score:  316
+	Best score:  2159
+
+Generation:  5
+	Best score:  1483
+
+Generation:  6
+	Best score:  10334
 
